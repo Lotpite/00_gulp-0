@@ -1,0 +1,15 @@
+{
+  "name": "fls-gulp",
+  "version": "1.0.0",
+  "description": "gulp settings pack",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Lotpite",
+  "license": "ISC",
+  "devDependencies": {
+    "browser-sync": "^2.27.7",
+    "gulp": "^4.0.2"
+  }
+}
