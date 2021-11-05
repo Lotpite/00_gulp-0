@@ -11,7 +11,7 @@ let path = { //папка с обьектом который содержит р
         fonts: project_folder + '/fonts/',
     },
     src: {
-        html: source_folder + '/',
+        html: source_folder + '/*.html',
         css: source_folder + '/scss/style.scss',
         js: source_folder + '/js/script.js',
         img: source_folder + '/img/**/*.{jpg,svg,gif,ico,webp}',
@@ -29,7 +29,8 @@ let path = { //папка с обьектом который содержит р
 
 let {src, dest} = require('gulp'),
     gulp = require('gulp'),
-    browsersync = require('browser-sync').create();
+    browsersync = require('browser-sync').create(),
+    fileinclude = require('gulp-file-include');
 
     function browserSync(params) {
         browsersync.init({
@@ -41,7 +42,19 @@ let {src, dest} = require('gulp'),
         })
     }
 
-    let watch = gulp.parallel(browserSync);
+    function html() { // копирование из исходной папки в папку назначения (создается папка dist)
+        return src(path.src.html)
+            .pipe(fileinclude())
+            .pipe(dest(path.build.html))
+            .pipe(browsersync.stream()) // чтоб gulp обновил страницу
+    }
 
+
+    let build = gulp.series(html);
+    let watch = gulp.parallel(build,browserSync);
+
+    // подружим gulp и функции
+    exports.build = build;
+    exports.html = html;
     exports.watch = watch;
     exports.default = watch;
