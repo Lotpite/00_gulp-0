@@ -11,7 +11,7 @@ let path = { //папка с обьектом который содержит р
         fonts: project_folder + '/fonts/',
     },
     src: {
-        html: source_folder + '/*.html',
+        html: [source_folder + '/*.html', '!' + source_folder + '/_*.html'],
         css: source_folder + '/scss/style.scss',
         js: source_folder + '/js/script.js',
         img: source_folder + '/img/**/*.{jpg,svg,gif,ico,webp}',
@@ -30,7 +30,8 @@ let path = { //папка с обьектом который содержит р
 let {src, dest} = require('gulp'),
     gulp = require('gulp'),
     browsersync = require('browser-sync').create(),
-    fileinclude = require('gulp-file-include');
+    fileinclude = require('gulp-file-include'),
+    del = require('del');
 
     function browserSync(params) {
         browsersync.init({
@@ -49,12 +50,21 @@ let {src, dest} = require('gulp'),
             .pipe(browsersync.stream()) // чтоб gulp обновил страницу
     }
 
+    function watchFiles(params) {
+        gulp.watch([path.watch.html], html);
+    }
 
-    let build = gulp.series(html);
-    let watch = gulp.parallel(build,browserSync);
+    function clean(params) {
+        return del(path.clean);
+    }
+
+    
+
+    let build = gulp.series(clean, html);
+    let watch = gulp.parallel(build, watchFiles, browserSync);
 
     // подружим gulp и функции
-    exports.build = build;
     exports.html = html;
+    exports.build = build;
     exports.watch = watch;
     exports.default = watch;
